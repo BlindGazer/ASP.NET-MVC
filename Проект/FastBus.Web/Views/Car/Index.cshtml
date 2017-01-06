@@ -1,0 +1,112 @@
+﻿@using FastBus.DAL.Enums
+@using FastBus.Web.Helpers
+@using SortDirection = FastBus.DAL.Objects.SortDirection
+@model FastBus.Web.Models.Car.CarSearchModel
+@{
+    ViewBag.Title = "Машины";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Список машин</h2>
+@using (Html.BeginForm("Get", "Car", FormMethod.Post, new { id = "searchForm" }))
+{
+    <div class="panel panel-collapse shadow">
+        <div class="heading">
+            <span class="title">Варианты поиска</span>
+        </div>
+        <div class="content padding10 bg-white">
+            <div class="grid">
+                <div class="row cells3">
+                    <div class="cell">
+                        @Html.LabelFor(x => x.Model)
+                        <div class="input-control text full-size">
+                            @Html.EditorFor(x => x.Model)
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.GovermentNumber)
+                        <div class="input-control text full-size">
+                            @Html.EditorFor(x => x.GovermentNumber)
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.Color)
+                        <div class="input-control text full-size">
+                            @Html.EditorFor(x => x.Color)
+                        </div>
+                    </div>
+                </div>
+                <div class="row cells3">
+                    <div class="cell">
+                        @Html.LabelFor(x => x.YearFrom)
+                        <div class="input-control text full-size datepicker">
+                            <input type="text" name="YearFrom" />
+                            <button class="button"><span class="mif-calendar"></span></button>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.YearTo)
+                        <div class="input-control text full-size datepicker">
+                            <input type="text" name="YearTo" />
+                            <button class="button"><span class="mif-calendar"></span></button>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.DriverName)
+                        <div class="input-control text full-size">
+                            @Html.EditorFor(x => x.DriverName)
+                        </div>
+                    </div>
+                </div>
+                <div class="row cells3">
+                    <div class="cell">
+                        @Html.LabelFor(x => x.Status)
+                        <div class="input-control text full-size">
+                            @Html.DropDownListFor(x => x.Status, SelectListHelper.GetFields<StatusCar>(), "Любой статус", new { @class = "select2" })
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="row cells2 no-margin">
+                            <div class="cell">
+                                @Html.LabelFor(x => x.OrderBy.Column)
+                            </div>
+                            <div class="cell align-right">
+                                @Html.LabelFor(x => x.OrderBy.Direction, new { @class = "padding5 no-padding-left" })
+                                <label class="switch small-check">
+                                    <input type="checkbox" name="OrderBy.Direction" id="OrderBy_Direction" value="@SortDirection.Desc"
+                                           @(Model.OrderBy.Direction == SortDirection.Desc ? "checked" : null) />
+                                    <span class="check"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-control text full-size">
+                            @Html.DropDownListFor(x => x.OrderBy.Column, Model.OrderByFields, new { @class = "select2" })
+                        </div>
+                    </div>
+                    <div class="cell padding-top20">
+                        <button type="submit" class="button"><span class="mif-search"></span> Искать</button>
+                        <button type="button" class="button" id="resetSearch"><span class="mif-cross"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="align-right margin10 no-margin-right">
+        <a class="button primary" href="@Url.Action("Add")"><span class="mif-user-plus"></span> Добавить</a>
+    </div>
+    <div id="searchContent" class="margin-top20">
+
+    </div>
+}
+@section scripts{
+    <script>
+        var paging = Pagination({
+            formId: "#searchForm",
+            contentSelector: "#searchContent",
+            pageSelector: ".pagination .item",
+            lengthSelector: "#lengthSearch",
+            resetSelector: "#resetSearch"
+        });
+
+        paging.search();
+    </script>
+}

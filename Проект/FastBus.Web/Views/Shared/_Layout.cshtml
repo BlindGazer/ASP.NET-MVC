@@ -1,0 +1,51 @@
+﻿@using Helpers = FastBus.DAL.Enums.UserRoles
+@using System.Web.Optimization
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - FastBus</title>
+    @Styles.Render("~/Content/main-css")
+</head>
+<body>
+    <div class="app-bar fixed-top navy">
+        <div class="container">
+            <a class="app-bar-element branding" href="@Url.Action("Index", "Route")"><span class="mif-bus"></span></a>
+            <span class="app-bar-divider"></span>
+            <ul class="app-bar-menu">
+                @if (User.IsInRole(Helpers.Admin))
+                {
+                    <li>
+                        <a href="" class="dropdown-toggle">Пользователи</a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li>@Html.ActionLink("Список", "Index", "User")</li>
+                            <li>@Html.ActionLink("Добавить", "Add", "User")</li>
+                        </ul>
+                    </li>
+                }
+                @if (User.IsInRole(Helpers.Admin) || User.IsInRole(Helpers.Dispatcher))
+                {
+                    <li>
+                        <a href="" class="dropdown-toggle">Машины</a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li>@Html.ActionLink("Список", "Index", "Car")</li>
+                            <li>@Html.ActionLink("Добавить", "Add", "Car")</li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+@Scripts.Render("~/bundles/general-scripts")
+@RenderSection("scripts",false)
+</body>
+</html>

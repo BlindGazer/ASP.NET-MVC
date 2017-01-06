@@ -1,0 +1,126 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+
+.margin-top5 {
+    margin-top: 5px;
+}
+
+.margin-top10 {
+    margin-top: 10px;
+}
+
+.margin-top15 {
+    margin-top: 15px;
+}
+
+.margin-top20 {
+    margin-top: 20px;
+}
+
+.margin-top30 {
+    margin-top: 30px;
+}
+
+.padding-top5 {
+    padding-top: 5px;
+}
+
+.padding-top10 {
+    padding-top: 10px;
+}
+
+.padding-top15 {
+    padding-top: 15px;
+}
+
+.padding-top20 {
+    padding-top: 20px;
+}
+
+.padding-top30 {
+    padding-top: 30px;
+}
+
+.pull-right {
+  float: right !important;
+}
+.pull-left {
+  float: left !important;
+}
+
+.login-form {
+    background-color: #6fa9c0;
+}
+
+.login-form form {
+    padding: 25px;
+    width: 30rem;
+    /*height: 20.75rem;*/
+    height: auto;
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    margin-top: -10.375rem;
+    margin-left: -15rem;
+    background-color: #ffffff;
+    background-color: rgba(255,255,255,0.95);
+    opacity: 0;
+    -webkit-transform: scale(.8);
+    transform: scale(.8);
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+}
+.validation-summary-errors {
+    color: #a94442;
+    background-color: #f2dede;
+    box-shadow: 0 0 5px 0 rgba(169, 68, 66, 0.5);
+}
+.validation-summary-errors ul {
+    margin: 10px;
+    list-style: none;
+    margin: 0;
+}
+.validation-summary-errors li:first-child {
+    margin: 5px 5px 0 5px;
+    padding-top: 10px;
+}
+.validation-summary-errors li:last-child {
+    margin:0 5px 5px 5px;
+    padding-bottom: 10px;
+}
+.validation-summary-errors li {
+    padding: 2px;
+}
+input.input-validation-error,
+textarea.input-validation-error,
+select.input-validation-error{
+  border: 1px solid #ce352c;
+}
+select.input-validation-error+.select2 .select2-selection{
+  border: 1px solid #ce352c !important;
+}
+.field-validation-error {
+    color: #ce352c;
+}
+.calendar-grid .mif-cross {
+    position: absolute;
+    top: 10px;
+    right: -16px;
+    cursor: pointer;
+}
+.calendar-grid .mif-cross:hover {
+    color: #59cde2;
+}
+
+.label-control {
+    padding-top: 10px;
+}
