@@ -1,0 +1,53 @@
+﻿@model FastBus.Web.Models.Route.ScheduleResultViewModel
+@if (Model.Data.Count > 0)
+{
+    <table class="table bordered hovered striped shadow">
+        <thead>
+        <tr>
+            <th>№ рейса</th>
+            <th>Пункт отправления</th>
+            <th>Пункт прибытия</th>
+            <th>Отпр</th>
+            <th>Приб</th>
+            <th>В пути</th>
+            <th>Мест</th>
+            <th>Стоимость</th>
+            <th>Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>@item.Number</td>
+                <td>@item.Route.Departure</td>
+                <td>@item.Route.Destination</td>
+                <td class="date">@item.DepartureDate.ToString("g")</td>
+                <td class="date">@item.DestinationDate.ToString("g")</td>
+                <td>@item.InTransit</td>
+                <td title="Свободно / Забронировано">
+                    <span class="fg-green">@item.FreeSeats</span> / <span class="fg-red">@item.ReserveTickets</span>
+                </td>
+                @if (item.Cost > 0)
+                {
+                    <td>@item.Cost.ToString("N") сом</td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                <td>
+                    <button class="button link details no-margin" schedule-id="@item.Id" type="button">Выбрать</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    { Html.RenderPartial("Partials/_Paging", Model); }
+}
+else
+{
+    <script>
+        showNotify("По запросу результатов не найдено")
+    </script>
+}

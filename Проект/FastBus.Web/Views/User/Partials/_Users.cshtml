@@ -1,0 +1,46 @@
+﻿@using Roles = FastBus.Domain.Enums.UserRoles
+@model FastBus.Web.Models.User.UserResultViewModel
+@if (Model.Data.Count > 0)
+{
+    <table class="table bordered hovered striped shadow">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>ФИО</th>
+                <th>Логин</th>
+                <th>Дата регистрации</th>
+                <th>Роль</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Data)
+                {
+                    var deleteClass = user.Role == Roles.DriverDescription ? "deleteDriverButton" : "deleteButton";
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.FullName</td>
+                    <td>@user.UserName</td>
+                    <td>@user.RegistredDate.ToLongDateString()</td>
+                    <td>@user.Role</td>
+                    <td>
+                        <a class="button primary" href="@Url.Action("Update", new {username = user.UserName})" title="Редактировать">
+                            <span class="mif-pencil"></span>
+                        </a>
+                        <button class="button danger @deleteClass"
+                                username="@user.UserName" title="Удалить" type="button">
+                            <span class="mif-bin"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    { Html.RenderPartial("Partials/_Paging", Model); }
+}
+else
+{
+    <script>
+        showNotify("По запросу результатов не найдено")
+    </script>
+}

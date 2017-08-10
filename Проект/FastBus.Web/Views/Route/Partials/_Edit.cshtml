@@ -1,0 +1,25 @@
+﻿@model FastBus.Web.Models.Route.RouteViewModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.Id)
+<div class="grid">
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Departure, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text  cell colspan10">
+            @Html.EditorFor(model => model.Departure)
+            @Html.ValidationMessageFor(model => model.Departure)
+        </div>
+    </div>
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Destination, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.Destination)
+            @Html.ValidationMessageFor(model => model.Destination)
+        </div>
+    </div>
+    <div class="row cells12">
+        <div class="offset2 cell colspan12">
+            <input type="submit" value="Сохранить" class="button primary" />
+            @Html.ActionLink("Отмена", "Index", "Route", null, new { @class = "button" })
+        </div>
+    </div>
+</div>

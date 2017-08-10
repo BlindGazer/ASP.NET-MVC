@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity.Migrations;
-using FastBus.DAL.Migrations;
+using FastBus.Persistence.Migrations;
 
 namespace FastBus.Web
 {

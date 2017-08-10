@@ -1,16 +1,14 @@
 ﻿@using FastBus.Web.Helpers
-@using SortDirection = FastBus.DAL.Objects.SortDirection
+@using SortDirection = FastBus.Domain.Objects.SortDirection
 @model FastBus.Web.Models.User.UserSearchModel
 @{
-    ViewBag.Title = "Пользователи";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Сотрудники";
 }
-<h2>Пользователи системы</h2>
-@using (Html.BeginForm("Get", "User", FormMethod.Post, new { id = "searchSearch" }))
+@using (Html.BeginForm("Search", "User"))
 {
-    <div class="panel panel-collapse shadow">
+    <div class="panel panel-collapse shadow margin-top20">
         <div class="heading">
-            <span class="title">Варианыт поиска</span>
+            <span class="title">Поиск сотрудников</span>
         </div>
         <div class="content padding10 bg-white">
             <div class="grid">
@@ -36,16 +34,16 @@
                 </div>
                 <div class="row cells3">
                     <div class="cell">
-                        @Html.LabelFor(x => x.RegisterDateBegin)
+                        @Html.LabelFor(x => x.RegisterDateFrom)
                         <div class="input-control text full-size datepicker">
-                            <input type="text" name="RegisterDateBegin" />
+                            <input type="text" name="RegisterDateFrom" />
                             <button class="button"><span class="mif-calendar"></span></button>
                         </div>
                     </div>
                     <div class="cell">
-                        @Html.LabelFor(x => x.RegisterDateEnd)
+                        @Html.LabelFor(x => x.RegisterDateTo)
                         <div class="input-control text full-size datepicker">
-                            <input type="text" name="RegisterDateEnd" />
+                            <input type="text" name="RegisterDateTo" />
                             <button class="button"><span class="mif-calendar"></span></button>
                         </div>
                     </div>
@@ -84,15 +82,50 @@
 }
 @section scripts{
     <script>
+        function deleteRow(data, element) {
+            if (data != null) {
+                if (data.IsSuccessful) {
+                    if (element.closest("table").find("tr").length > 2) {
+                        element.closest("tr").remove();
+                    } else {
+                        $("#searchContent").empty();
+                    }
+                    showNotify("Пользователь успешно удален", "success");
+                } else {
+                    showNotify(data.Message, "danger");
+                }
+            }
+        }
+
+        function deleteHandler() {
+            $("#searchContent .deleteButton").click(function () {
+                var element = $(this);
+                var username = element.attr("username");
+                $.post("@Url.Action("Delete")", { username: username },
+                    function (data) {
+                        deleteRow(data, element);
+                    });
+            });
+
+            $("#searchContent .deleteDriverButton").click(function () {
+                var element = $(this);
+                var username = element.attr("username");
+                $.post("@Url.Action("Delete", "Driver")", { username: username },
+                    function (data) {
+                        deleteRow(data, element);
+                    });
+            });
+        }
+
         var paging = Pagination({
-            formId: "#searchSearch",
+            formId: "form",
             contentSelector: "#searchContent",
             pageSelector: ".pagination .item",
             lengthSelector: "#lengthSearch",
-            // orderBySelector: "#OrderBy_Column, #OrderBy_Direction",
-            resetSelector: "#resetSearch"
+            resetSelector: "#resetSearch",
+            deleteCallback: deleteHandler
         });
-            
+
         paging.search();
     </script>
 }

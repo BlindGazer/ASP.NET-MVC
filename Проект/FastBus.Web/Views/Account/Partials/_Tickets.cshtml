@@ -1,0 +1,37 @@
+﻿@model FastBus.Web.Models.Route.TicketResultViewModel
+@if (Model.Data.Any())
+{
+    <table class="table bordered hovered striped shadow">
+        <thead>
+        <tr>
+            <th>№ рейса</th>
+            <th>Стоимость</th>
+            <th>Маршрут</th>
+            <th>Отпр</th>
+            <th>Приб</th>
+            <th>В пути</th>
+            <th>Статус</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>@item.Number</td>
+                <td>@item.CostFormated</td>
+                <td>@item.Departure -> @item.Destination</td>
+                <td class="date">@item.DepartureDate.ToString("g")</td>
+                <td class="date">@item.DestinationDate.ToString("g")</td>
+                <td>@item.Time</td>
+                <td>@item.Status</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="notify notify-message info">
+        <span class="notify-text">Нет ближайших рейсов</span>
+    </div>
+}

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FastBus.Services</RootNamespace>
     <AssemblyName>FastBus.Services</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,9 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AutoMapper, Version=6.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.1.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -67,8 +67,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.0\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -85,34 +84,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\ITicketsService.cs" />
+    <Compile Include="Contracts\IScheduleService.cs" />
+    <Compile Include="Contracts\IRouteService.cs" />
+    <Compile Include="Contracts\IDriverService.cs" />
     <Compile Include="MapperConfiguration.cs" />
     <Compile Include="Contracts\IService.cs" />
     <Compile Include="Contracts\ICarService.cs" />
     <Compile Include="Contracts\IUserService.cs" />
     <Compile Include="Extensions\QueryExtensions.cs" />
+    <Compile Include="Models\Buyer\BuyerModel.cs" />
+    <Compile Include="Models\Buyer\BuyerSearchQuery.cs" />
     <Compile Include="Models\Car\CarModel.cs" />
     <Compile Include="Models\Car\CarSearchQuery.cs" />
-    <Compile Include="Models\ServerResponse.cs" />
+    <Compile Include="Models\Driver\DriverSearchQuery.cs" />
+    <Compile Include="Models\Driver\DriverModel.cs" />
+    <Compile Include="Models\Route\RouteModel.cs" />
+    <Compile Include="Models\Route\TicketSearchQuery.cs" />
+    <Compile Include="Models\Route\ScheduleSearchQuery.cs" />
+    <Compile Include="Models\Route\RouteSearchQuery.cs" />
+    <Compile Include="Models\Route\ScheduleModel.cs" />
+    <Compile Include="Models\Route\WayPointModel.cs" />
+    <Compile Include="Models\ServiceResponse.cs" />
+    <Compile Include="Models\Route\TicketModel.cs" />
     <Compile Include="Models\User\UserModel.cs" />
     <Compile Include="Models\User\UserSearchQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BaseService.cs" />
+    <Compile Include="Services\TicketService.cs" />
+    <Compile Include="Services\ScheduleService.cs" />
+    <Compile Include="Services\RouteService.cs" />
     <Compile Include="Services\CarService.cs" />
-    <Compile Include="Services\UserSerivce.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FastBus.DAL\FastBus.DAL.csproj">
-      <Project>{004a399c-511a-4c40-9cd8-1e8d4bd8eec3}</Project>
-      <Name>FastBus.DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FastBus.Repositories\FastBus.Repositories.csproj">
-      <Project>{fca2a23d-3293-4715-b1b9-15422c5e4db2}</Project>
-      <Name>FastBus.Repositories</Name>
-    </ProjectReference>
+    <Compile Include="Services\DriverService.cs" />
+    <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FastBus.DAL\FastBus.DAL.csproj">
+      <Project>{fca2a23d-3293-4715-b1b9-15422c5e4db2}</Project>
+      <Name>FastBus.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FastBus.Domain\FastBus.Domain.csproj">
+      <Project>{217355bf-74aa-4ffc-972d-6f65421db41a}</Project>
+      <Name>FastBus.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,20 @@
+﻿@model FastBus.Web.Models.User.RegisterUserViewModel
+@{
+    ViewBag.Title = ViewBag.PageTitle = "Добавление водителя";
+}
+<div class="fb-row">
+    @using (Html.BeginForm("Add", "Driver"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="grid">
+            @{Html.RenderPartial("~/Views/User/Partials/_Add.cshtml", Model);}
+            <div class="row cells12">
+                <div class="offset2 cell colspan12">
+                    <input type="submit" value="Создать" class="button primary" />
+                    @Html.ActionLink("Отмена", "Index", "Driver", null, new { @class = "button" })
+                </div>
+            </div>
+        </div>
+      }
+</div>

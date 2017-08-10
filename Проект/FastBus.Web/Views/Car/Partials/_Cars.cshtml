@@ -1,0 +1,55 @@
+﻿@using EnumHelper = FastBus.Domain.Enums.EnumHelper
+@model FastBus.Web.Models.Car.CarResultViewModel
+@if (Model.Data.Any())
+{
+    <table class="table bordered hovered striped shadow">
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Гос номер</th>
+                <th>Цвет</th>
+                <th>Кол-во мест</th>
+                <th>Год выпуска</th>
+                <th>Состояние</th>
+                <th>Водители</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Data)
+            {
+                <tr>
+                    <td>@user.CarModel</td>
+                    <td>@user.GovermentNumber</td>
+                    <td>@user.Color</td>
+                    <td>@user.Seats</td>
+                    <td>@user.Year</td>
+                    <td>@EnumHelper.GetDescription(user.Status)</td>
+                    <td>
+                        @foreach (var driver in user.Drivers)
+                        {
+                            @Html.ActionLink(driver.Name, "Update", "Driver", new {id = driver.Id},
+                                    new { target = "_blank", @class = "button small-button" })
+                            <br />
+                        }
+                    </td>
+                    <td>
+                        <a class="button primary" href="@Url.Action("Update", new {id = user.Id})" title="Редактировать">
+                            <span class="mif-pencil"></span>
+                        </a>
+                        <button class="button danger deleteButton" id="@user.Id" title="Удалить" type="button">
+                            <span class="mif-cross"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    { Html.RenderPartial("Partials/_Paging", Model); }
+}
+else
+{
+    <script>
+        showNotify("По запросу результатов не найдено")
+    </script>
+}

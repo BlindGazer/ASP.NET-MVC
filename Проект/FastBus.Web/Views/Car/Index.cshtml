@@ -1,17 +1,15 @@
-﻿@using FastBus.DAL.Enums
+﻿@using FastBus.Domain.Enums
 @using FastBus.Web.Helpers
-@using SortDirection = FastBus.DAL.Objects.SortDirection
+@using SortDirection = FastBus.Domain.Objects.SortDirection
 @model FastBus.Web.Models.Car.CarSearchModel
 @{
     ViewBag.Title = "Машины";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Список машин</h2>
-@using (Html.BeginForm("Get", "Car", FormMethod.Post, new { id = "searchForm" }))
+@using (Html.BeginForm("Search", "Car"))
 {
-    <div class="panel panel-collapse shadow">
+    <div class="panel panel-collapse shadow margin-top20">
         <div class="heading">
-            <span class="title">Варианты поиска</span>
+            <span class="title">Поиск машин</span>
         </div>
         <div class="content padding10 bg-white">
             <div class="grid">
@@ -59,6 +57,12 @@
                 </div>
                 <div class="row cells3">
                     <div class="cell">
+                        @Html.LabelFor(x => x.GarageNumber)
+                        <div class="input-control text full-size">
+                            @Html.EditorFor(x => x.GarageNumber)
+                        </div>
+                    </div>
+                    <div class="cell">
                         @Html.LabelFor(x => x.Status)
                         <div class="input-control text full-size">
                             @Html.DropDownListFor(x => x.Status, SelectListHelper.GetFields<StatusCar>(), "Любой статус", new { @class = "select2" })
@@ -82,11 +86,11 @@
                             @Html.DropDownListFor(x => x.OrderBy.Column, Model.OrderByFields, new { @class = "select2" })
                         </div>
                     </div>
-                    <div class="cell padding-top20">
-                        <button type="submit" class="button"><span class="mif-search"></span> Искать</button>
-                        <button type="button" class="button" id="resetSearch"><span class="mif-cross"></span></button>
-                    </div>
                 </div>
+            </div>
+            <div class="align-right">
+                <button type="button" class="button" id="resetSearch"><span class="mif-cross"></span></button>
+                <button type="submit" class="button"><span class="mif-search"></span> Искать</button>
             </div>
         </div>
     </div>
@@ -97,14 +101,33 @@
 
     </div>
 }
+
 @section scripts{
     <script>
+        function deleteHandler() {
+            $("#searchContent .deleteButton")
+                .click(function() {
+                    var element = $(this);
+                    var id = element.attr("id");
+                    $.post("@Url.Action("Delete")", { id: id }, function (data) {
+                        if (data != null) {
+                            if (data.IsSuccessful) {
+                                element.closest("tr").remove();
+                                showNotify("Машина успешно удалена", "success");
+                            } else {
+                                showNotify(data.Message, "danger");
+                            }
+                        }
+                    });
+                });
+        }
         var paging = Pagination({
-            formId: "#searchForm",
+            formId: "form",
             contentSelector: "#searchContent",
             pageSelector: ".pagination .item",
             lengthSelector: "#lengthSearch",
-            resetSelector: "#resetSearch"
+            resetSelector: "#resetSearch",
+            deleteCallback: deleteHandler
         });
 
         paging.search();

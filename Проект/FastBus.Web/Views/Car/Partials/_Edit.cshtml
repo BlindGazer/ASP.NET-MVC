@@ -1,0 +1,68 @@
+﻿@using FastBus.Domain.Enums
+@using FastBus.Web.Helpers
+@model FastBus.Web.Models.Car.AddCarViewModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.Id)
+<div class="grid">
+    <div class="row cells12">
+        @Html.LabelFor(model => model.CarModel, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.CarModel)
+            @Html.ValidationMessageFor(model => model.CarModel)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.GovermentNumber, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text  cell colspan10">
+            @Html.EditorFor(model => model.GovermentNumber)
+            @Html.ValidationMessageFor(model => model.GovermentNumber)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Color, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.Color)
+            @Html.ValidationMessageFor(model => model.Color)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Seats, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.Seats)
+            @Html.ValidationMessageFor(model => model.Seats)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Year, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.Year)
+            @Html.ValidationMessageFor(model => model.Year)
+        </div>
+    </div>
+    @if (Model?.Id != null)
+    {
+        <div class="row cells12">
+            @Html.LabelFor(model => model.Status, new { @class = "cell colspan2 label-control" })
+            <div class="input-control text cell colspan10">
+                @Html.DropDownListFor(x => x.Status, SelectListHelper.GetFields<StatusCar>(), new { @class = "select2" })
+            </div>
+        </div>
+    }
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Drivers, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.ListBoxFor(x => x.Drivers, SelectListHelper.GetDrivers(), new { @class = "select2" })
+        </div>
+    </div>
+
+    <div class="row cells12">
+        <div class="offset2 cell colspan12">
+            <input type="submit" value="Сохранить" class="button primary" />
+            @Html.ActionLink("Отмена", "Index", "Car", null, new { @class = "button" })
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+﻿@using FastBus.Domain.Enums
+@model FastBus.Web.Models.Route.RouteResultViewModel
+@{
+    var isAdmin = User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Dispatcher);
+}
+@if (Model.Data.Count > 0)
+{
+    <table class="table bordered hovered striped shadow">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Место отправления</th>
+                <th>Место назначения</th>
+                <th>Маршрут следования</th>
+                @if (isAdmin)
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var route in Model.Data)
+            {
+                <tr>
+                    <td>@route.Id</td>
+                    <td>@route.Departure</td>
+                    <td>@route.Destination</td>
+                    <td>@route.WayPointsString</td>
+                    @if (isAdmin)
+                    {
+                        <td>
+                            <a class="button primary" href="@Url.Action("Update", new { route.Id })" title="Редактировать">
+                                <span class="mif-pencil"></span>
+                            </a>
+                            <button class="button danger deleteButton" id="@route.Id" title="Удалить" type="button">
+                                <span class="mif-bin"></span>
+                            </button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    { Html.RenderPartial("Partials/_Paging", Model); }
+}
+else
+{
+    <script>
+        showNotify("По запросу результатов не найдено")
+    </script>
+}

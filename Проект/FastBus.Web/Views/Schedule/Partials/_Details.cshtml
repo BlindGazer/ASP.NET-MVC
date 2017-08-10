@@ -1,0 +1,115 @@
+﻿@using FastBus.Domain.Enums
+@using FastBus.Web.Models.User
+@model FastBus.Web.Models.Route.ScheduleViewModel
+<div id="scheduleDetailsForm">
+    <h4 class="title">Оформление билета на маршрут: №@Model.Number @Model.Route.Departure -> @Model.Route.Destination</h4>
+    <div class="grid padding10">
+        <div class="row cells12">
+            <div class="cell colspan4">
+                @Html.DisplayNameFor(x => x.Route.Departure)
+                <h3>@Model.Route.Departure</h3>
+            </div>
+            <div class="cell colspan4">
+                @Html.DisplayNameFor(x => x.Route.Destination)
+                <h3>@Model.Route.Destination</h3>
+            </div>
+            <div class="cell colspan3">
+                @Html.DisplayNameFor(x => x.DepartureDate)
+                <h3><span class="mif-calendar"></span> @Model.DepartureDate.ToString("dd.MM.yyyy")</h3>
+            </div>
+            <div class="cell">
+                @Html.DisplayNameFor(x => x.DepartureTime)
+                <h3>
+                    @Model.DepartureTime
+                </h3>
+            </div>
+        </div>
+    </div>
+    <hr class="gray" />
+    <div class="grid padding10">
+        <div class="row cells12">
+            <div class="cell colspan2">
+                Рейс №: @Model.Number
+            </div>
+            <div class="cell colspan4">
+                @Html.DisplayNameFor(x => x.DestinationDate): @Model.DestinationDate.ToString("g")
+            </div>
+            <div class="cell colspan2">
+                @Html.DisplayNameFor(x => x.InTransit): @Model.InTransit
+            </div>
+            <div class="cell colspan4">
+                @Html.DisplayNameFor(x => x.DriversNames): @Model.DriversNames
+            </div>
+        </div>
+    </div>
+    <hr class="gray" />
+    <div class="grid padding10">
+        <div class="row cells4">
+            <div class="cell fg-blue">
+                Мест - @Model.Seats
+            </div>
+            <div class="cell fg-green">
+                Свободно - @Model.FreeSeats
+            </div>
+            <div class="cell fg-orange">
+                Забранировано - @Model.ReserveTickets
+            </div>
+            <div class="cell fg-red">
+                Купленно - @Model.PayTickets
+            </div>
+        </div>
+    </div>
+    <div class="grid padding10">
+        <div class="row cells2">
+            <div class="cell">
+                @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Dispatcher))
+                {
+                    @Html.ActionLink("Редактировать", "Update", "Schedule", new { Model.Id }, new { @class = "button info", target = "_blank" })
+                }
+                else if (Model.FreeSeats > 0 && Model.DepartureDate > DateTime.Now)
+                {
+                    <button class="button warning" type="button" id="reserveTicket">Забронировать</button>
+                    <button class="button success" type="button" id="buyTicket">Купить</button>
+                }
+                <button class="button backSearch" type="button">Выбрать другой рейс</button>
+            </div>
+            <div class="align-right">
+                <button class="button primary" type="button" disabled>Цена: @Model.Cost сом</button>
+            </div>
+        </div>
+    </div>
+    @if (Model.FreeSeats == 0)
+    {
+        <div class="notify notify-message warning">
+            <span class="notify-text">На данном рейсе не осталось свободных мест</span>
+        </div>
+    }
+    @if (Model.DepartureDate <= DateTime.Now)
+    {
+        <div class="notify notify-message alert">
+            <span class="notify-text">Время на заказ билета уже истекло</span>
+        </div>
+    }
+    <br />
+</div>
+@if (!User.Identity.IsAuthenticated)
+{
+    <div id="registerForm" style="display: none;">
+        <h4 class="title">Регистрация</h4>
+        <form id="regisetUserForm" class="padding10">
+            @{ Html.RenderPartial("~/Views/Account/Partials/_RegisterPartial.cshtml", new RegisterUserViewModel());}
+        </form>
+    </div>
+}
+
+<script src="~/Scripts/route/routeDetails.js"></script>
+@if (!User.Identity.IsAuthenticated)
+{
+    <script>
+        registerUserInit("@Url.Action("RegisterUser", "Account")", "@Url.Action("GetAppBar", "Account")");
+    </script>
+}
+<script>
+    window.isAuth = @User.Identity.IsAuthenticated.ToString().ToLower();
+    detailsInit("@Url.Action("ReserveDetails")", @Model.Id);
+</script>

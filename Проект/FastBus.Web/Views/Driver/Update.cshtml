@@ -1,0 +1,29 @@
+﻿@using FastBus.Web.Helpers
+@model FastBus.Web.Models.Driver.EditDriverViewModel
+@{
+    ViewBag.Title = ViewBag.PageTitle = "Редактирование водителя";
+}
+<div class="fb-row">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Id)
+        @Html.ValidationSummary(true)
+        <div class="grid">
+            @{Html.RenderPartial("~/Views/User/Partials/_Edit.cshtml", Model);}
+
+            <div class="row cells12">
+                @Html.LabelFor(model => model.Cars, new { @class = "cell colspan2 label-control" })
+                <div class="input-control text cell colspan10">
+                    @Html.ListBoxFor(x => x.Cars, SelectListHelper.GetCars(), new { @class = "select2" })
+                </div>
+            </div>
+            <div class="row cells12">
+                <div class="offset2 cell colspan12">
+                    <input type="submit" value="Обновить" class="button primary" />
+                    @Html.ActionLink("Отмена", "Index", "Driver", null, new { @class = "button" })
+                </div>
+            </div>
+        </div>
+    }
+</div>

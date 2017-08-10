@@ -1,0 +1,39 @@
+﻿.input-control input:read-only{
+  background-color: #efefee;
+}
+
+table.table {
+    background: white;
+}
+
+.button {
+    border-radius: .325rem;
+}
+
+.input-control .button {
+    border-radius: 0;
+}
+
+.app-bar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.app-bar.navy {
+    background-color: rgba(0, 114, 198,0.85);
+}
+
+.panel.panel-collapse .row {
+    margin-bottom: 5px;
+}
+
+.tab-25p .tabs li {
+    width: 24%;
+}
+.tab-25p .tabs li a {
+    width: 100%;
+    text-align: center;
+}
+
+.step-list.no-numbers > li:before {
+    content: none;
+}

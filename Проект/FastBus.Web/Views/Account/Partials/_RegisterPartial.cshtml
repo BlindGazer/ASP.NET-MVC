@@ -1,0 +1,76 @@
+﻿@model FastBus.Web.Models.User.RegisterUserViewModel
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true)
+<div class="grid">
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Email, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.Email)
+            @Html.ValidationMessageFor(model => model.Email)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.UserName, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text  cell colspan10">
+            @Html.EditorFor(model => model.UserName)
+            @Html.ValidationMessageFor(model => model.UserName)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.FirstName, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.FirstName)
+            @Html.ValidationMessageFor(model => model.FirstName)
+        </div>
+    </div>
+    <div class="row cells12">
+        @Html.LabelFor(model => model.LastName, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.LastName)
+            @Html.ValidationMessageFor(model => model.LastName)
+        </div>
+    </div>
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Patronymic, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10">
+            @Html.EditorFor(model => model.Patronymic)
+            @Html.ValidationMessageFor(model => model.Patronymic)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.Password, new { @class = "cell colspan2 label-control" })
+        <div class="input-control password cell colspan10" data-role="input">
+            @Html.EditorFor(model => model.Password)
+            <button class="button helper-button reveal" type="button"><span class="mif-looks"></span></button>
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.ConfirmPassword, new { @class = "cell colspan2 label-control" })
+        <div class="input-control password cell colspan10" data-role="input">
+            @Html.EditorFor(model => model.ConfirmPassword)
+            <button class="button helper-button reveal" type="button"><span class="mif-looks"></span></button>
+            @Html.ValidationMessageFor(model => model.ConfirmPassword)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        @Html.LabelFor(model => model.DateBorn, new { @class = "cell colspan2 label-control" })
+        <div class="input-control text cell colspan10 datepicker">
+            <input type="text" name="DateBorn" />
+            <button class="button" type="button"><span class="mif-calendar"></span></button>
+            @Html.ValidationMessageFor(model => model.DateBorn)
+        </div>
+    </div>
+
+    <div class="row cells12">
+        <div class="offset2 cell colspan12">
+            <input type="submit" value="Регистрация" class="button primary" />
+            @Html.ActionLink("Отмена", "Index", "Schedule", null, new { @class = "button" })
+        </div>
+    </div>
+</div>

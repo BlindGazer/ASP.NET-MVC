@@ -1,0 +1,10 @@
+﻿@model FastBus.Web.Models.Car.AddCarViewModel
+@{
+    ViewBag.Title =  ViewBag.PageTitle = "Добавление машины";
+}
+<div class="fb-row">
+    @using (Html.BeginForm())
+    {
+        Html.RenderPartial("Partials/_Edit", Model);
+    }
+</div>

@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using FastBus.DAL.Concrete.Entities.Identity;
-using FastBus.DAL.Enums;
-using FastBus.DAL.Objects;
+using FastBus.Domain.Enums;
 using FastBus.Services.Contracts;
 using FastBus.Services.Models.User;
-using FastBus.Web.Models;
+using FastBus.Web.Extensions;
 using FastBus.Web.Models.User;
 using Microsoft.AspNet.Identity;
 
@@ -24,56 +22,60 @@ namespace FastBus.Web.Controllers
             _userService = userService;
         }
 
-        
         public ActionResult Index()
         {
             return View(new UserSearchModel());
         }
-        
-        public ActionResult Get(UserSearchModel search)
+
+        public ActionResult Search(UserSearchModel search)
         {
             var result = _userService.Where(Mapper.Map<UserSearchQuery>(search));
-            return PartialView("Partials/GetUsers", new UserResultViewModel
-            {
-                Result = Mapper.Map<QueryResult<UserViewModel>>(result),
-                Search = search
-            });
+            return PartialView("Partials/_Users", Mapper.Map<UserResultViewModel>(result));
         }
-        
+
         public ActionResult Add()
         {
             return View();
         }
-        
+
         [HttpPost]
-        public async Task<ActionResult> Add(RegisterViewModelWithRole model)
+        public async Task<ActionResult> Add(RegisterUserViewModelWithRole model)
         {
             if (ModelState.IsValid)
             {
-                var user = Mapper.Map<User>(model);
-                var result = await UserManager.CreateAsync(user, model.Password);
-                
-                if (result.Succeeded)
+                var response = await UserManager.Register(model, ModelState);
+                if (response.IsSuccessfull)
                 {
-                    user = await UserManager.FindByNameAsync(user.UserName);
-
-                    await UserManager.AddToRolesAsync(user.Id, model.UserRole);
-                    return RedirectToAction("Index", "User");
+                    this.FlashSuccess(response.Message);
+                    return RedirectToAction("Index");
                 }
-                AddErrors(result);
             }
             return View(model);
         }
 
-        #endregion
-
-        #region privateMethod
-        private void AddErrors(IdentityResult result)
+        [HttpGet]
+        public ActionResult Update(string username)
         {
-            foreach (var error in result.Errors)
+            if (string.IsNullOrEmpty(username)) return RedirectToAction("Index");
+            return View(Mapper.Map<EditUserViewModel>(UserManager.FindByName(username)));
+        }
+
+        [HttpPost]
+        public ActionResult Update(EditUserViewModel model)
+        {
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", error);
+                _userService.Update(Mapper.Map<UserModel>(model));
+                this.FlashSuccess("Данные успешно обновленны");
+                return RedirectToAction("Index");
             }
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string username)
+        {
+            return Json(_userService.Delete(username));
         }
 
         #endregion

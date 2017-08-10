@@ -3,29 +3,30 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
-using FastBus.DAL.Enums;
-using FastBus.DAL.Objects;
+using FastBus.Domain.Objects;
 using FastBus.Web.Helpers;
+using FastBus.Domain.Enums;
 
 namespace FastBus.Web.Models.Car
 {
+    public enum CarOrderByField
+    {
+        [Display(Name = "Модель")]
+        Model,
+        [Display(Name = "Гос номер")]
+        GovermentNumber,
+        [Display(Name = "Цвет")]
+        Color,
+        [Display(Name = "Кол-во мест")]
+        Seats,
+        [Display(Name = "Год выпуска")]
+        Year,
+        [Display(Name = "Состояние")]
+        Status
+    }
+
     public class CarSearchModel : BaseQuery
     {
-        public enum CarOrderByField
-        {
-            [Display(Name = "Модель")]
-            Model,
-            [Display(Name = "Гос номер")]
-            GovermentNumber,
-            [Display(Name = "Цвет")]
-            Color,
-            [Display(Name = "Кол-во мест")]
-            Seats,
-            [Display(Name = "Год выпуска")]
-            Year,
-            [Display(Name = "Состояние")]
-            Status
-        }
 
         [DisplayName("Год выпуска от")]
         public short? YearFrom { get; set; }
@@ -35,26 +36,20 @@ namespace FastBus.Web.Models.Car
         public string Model { get; set; }
         [DisplayName("Гос номер")]
         public string GovermentNumber { get; set; }
+        [DisplayName("Гаражный номер")]
+        public string GarageNumber { get; set; }
         [DisplayName("Цвет")]
         public string Color { get; set; }
         [DisplayName("Водитель")]
         public string DriverName { get; set; }
         [DisplayName("Состояние")]
         public StatusCar? Status { get; set; }
-
         public IEnumerable<SelectListItem> OrderByFields { get; set; }
 
         public CarSearchModel()
         {
-            var list = SelectListHelper.GetFields<CarOrderByField>();
-            OrderByFields = list;
-            OrderBy = new ColumnOrder
-            {
-                Column = list.First().Value,
-                Direction = SortDirection.Asc
-
-            };
-            Paging = new Paging();
+            OrderByFields = SelectListHelper.GetFields<CarOrderByField>();
+            OrderBy = new ColumnOrder(OrderByFields.First().Value);
         }
 
     }

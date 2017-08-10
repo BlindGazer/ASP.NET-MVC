@@ -1,43 +1,55 @@
 ﻿using System.Web;
 using System.Web.Mvc;
-using FastBus.Services.Contracts;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using AutoMapper;
-using FastBus.DAL.Concrete.Entities.Identity;
-using FastBus.DAL.Enums;
-using FastBus.Web.Models;
+using FastBus.Domain.Entities;
+using FastBus.Domain.Enums;
+using FastBus.Services.Contracts;
+using FastBus.Services.Models;
+using FastBus.Services.Models.Route;
+using FastBus.Web.Extensions;
+using FastBus.Web.Models.Route;
+using FastBus.Web.Models.User;
 using Microsoft.AspNet.Identity;
 
 namespace FastBus.Web.Controllers
 {
     public class AccountController : BaseController
     {
+        private readonly ITicketsService _ticketsService;
         private FastBusSignInManager _signInManager;
-        public FastBusSignInManager SignInManager
+
+        public FastBusSignInManager SignInManager => _signInManager ?? 
+            (_signInManager = HttpContext.GetOwinContext().Get<FastBusSignInManager>());
+
+        public AccountController(ITicketsService ticketsService)
         {
-            get
-            {
-                if (_signInManager == null)
-                {
-                    _signInManager = HttpContext.GetOwinContext().Get<FastBusSignInManager>();
-                }
-                return _signInManager; ;
-            }
+            _ticketsService = ticketsService;
         }
 
-        private readonly IUserService _userService;
-
-        public AccountController(IUserService userService)
+        public ActionResult Index()
         {
-            _userService = userService;
+            return View();
+        }
+        
+        public ActionResult BuyerInfo()
+        {
+            var buyer = UserManager.FindByName(User.Identity.Name) as Buyer;
+            return PartialView("Partials/_BuyerInfo", buyer);
+        }
+
+        public ActionResult GetUpcomingTicket()
+        {
+            var search = new TicketSearchQuery(int.Parse(User.Identity.GetUserId()));
+            return PartialView("Partials/_Tickets", Mapper.Map<TicketResultViewModel>(_ticketsService.Where(search)));
         }
 
         [HttpGet]
         public ActionResult LogOut(string returnUrl)
         {
             HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Route");
+            return RedirectToAction("Index", "Schedule");
         }
 
         [HttpGet]
@@ -69,45 +81,84 @@ namespace FastBus.Web.Controllers
                     var isAdmin = await UserManager.IsInRoleAsync(user.Id, UserRoles.Admin);
                     return Redirect(isAdmin && !string.IsNullOrWhiteSpace(returnUrl) ? returnUrl : "/");
                 default:
-                    ModelState.AddModelError("", "Некорректный логин или пароль");
+                    ModelState.AddModelError("", @"Некорректный логин или пароль");
                     return View(model);
             }
         }
-
+        
         public ActionResult Register()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Schedule");
+            }
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterUserViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = Mapper.Map<User>(model);
+                var buyer = Mapper.Map<Buyer>(model);
 
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var result = await UserManager.CreateAsync(buyer, model.Password);
                 if (result.Succeeded)
                 {
-                    user = await UserManager.FindByNameAsync(user.Name);
+                    buyer = await UserManager.FindByNameAsync(buyer.UserName) as Buyer;
 
-                    await UserManager.AddToRolesAsync(user.Id, UserRoles.Client);
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await UserManager.AddToRolesAsync(buyer.Id, UserRoles.Buyer);
+                    await SignInManager.SignInAsync(buyer, isPersistent: false, rememberBrowser: false);
 
-                    return RedirectToAction("Index", "Route");
+                    return RedirectToAction("Index", "Schedule");
                 }
-                AddErrors(result);
+                ModelState.AddIdentityErrors(result);
             }
             return View(model);
         }
 
-        private void AddErrors(IdentityResult result)
+        [HttpPost]
+        public async Task<ActionResult> RegisterUser(RegisterUserViewModel model)
         {
-            foreach (var error in result.Errors)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", error);
+                if (User.Identity.IsAuthenticated)
+                {
+                    return Json(new ServiceResponse(true, User.Identity.GetUserId()));
+                }
+                var buyer = Mapper.Map<Buyer>(model);
+
+                var result = await UserManager.CreateAsync(buyer, model.Password);
+                if (result.Succeeded)
+                {
+                    buyer = await UserManager.FindByNameAsync(buyer.UserName) as Buyer;
+
+                    await UserManager.AddToRolesAsync(buyer.Id, UserRoles.Buyer);
+                    await SignInManager.SignInAsync(buyer, isPersistent: false, rememberBrowser: false);
+
+                    return Json(new ServiceResponse(true, buyer.Id.ToString()));
+                }
+                ModelState.AddIdentityErrors(result);
             }
+            return Json(new ServiceResponse(false, ModelState.GetErrors()));
+        }
+
+        [HttpPost]
+        public ActionResult GetAppBar()
+        {
+            return PartialView("Partials/_AppBar");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditPassword(EditPasswordModel model)
+        {
+            if(!ModelState.IsValid) return Json(new ServiceResponse(false, ModelState.GetErrors("\n")));
+            var id = User.Identity.GetUserIdInt();
+            var result = await UserManager.ChangePasswordAsync(id, model.CurrentPassword, model.NewPassword);
+            return Json(result.Succeeded
+                ? new ServiceResponse(true, "Пароль успешно изменен")
+                : new ServiceResponse(false, "Неверный пароль"));
         }
     }
 }

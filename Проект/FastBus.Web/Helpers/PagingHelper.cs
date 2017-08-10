@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Web.Mvc;
-using FastBus.DAL.Objects;
+using FastBus.Domain.Objects;
 
 namespace FastBus.Web.Helpers
 {
@@ -20,47 +19,49 @@ namespace FastBus.Web.Helpers
             }
             return tag;
         }
-        public static MvcHtmlString PageLinks(this HtmlHelper html, Paging paging, int total)
+
+        public static MvcHtmlString PageLinks(this HtmlHelper html, QueryResult query)
         {
             var result = new StringBuilder();
             var tag = new TagBuilder("div");
-            string firstText = "<span class='fa fa-angle-double-left'></span>",
+            var lastPage = query.LastPage;
+            const string firstText = "<span class='fa fa-angle-double-left'></span>",
                 lastText = "<span class='fa fa-angle-double-right'></span>";
+
             tag.AddCssClass("pagination");
-            var totalPages = (int)Math.Ceiling((double)total/paging.Length);
-            if (totalPages <= 9)
+            if (lastPage <= 9)
             {
-                for (var i = 1; i <= totalPages; i++)
+                for (var i = 1; i <= lastPage; i++)
                 {
-                    result.Append(GetTag(i, paging.Page));
+                    result.Append(GetTag(i, query.Paging.Page));
                 }
             }
-            else if (totalPages - paging.Page <= 4)
+            else if (lastPage - query.Paging.Page <= 4)
             {
-                result.Append(GetTag(1, paging.Page, firstText));
-                for (var i = totalPages - 8; i <= totalPages; i++)
+                result.Append(GetTag(1, query.Paging.Page, firstText));
+                for (var i = lastPage - 8; i <= lastPage; i++)
                 {
-                    result.Append(GetTag(i, paging.Page));
+                    result.Append(GetTag(i, query.Paging.Page));
                 }
             }
-            else if (totalPages - paging.Page > 4)
+            else if (lastPage - query.Paging.Page > 4)
             {
-                if (paging.Page > 5)
+                if (query.Paging.Page > 5)
                 {
-                    result.Append(GetTag(1, paging.Page, firstText));
-                    for (var i = paging.Page - 4; i <= paging.Page + 4; i++)
+                    result.Append(GetTag(1, query.Paging.Page, firstText));
+                    for (var i = query.Paging.Page - 4; i <= query.Paging.Page + 4; i++)
                     {
-                        result.Append(GetTag(i, paging.Page));
+                        result.Append(GetTag(i, query.Paging.Page));
                     }
-                    result.Append(GetTag(totalPages, paging.Page, lastText));
+                    result.Append(GetTag(lastPage, query.Paging.Page, lastText));
                 }
                 else
                 {
                     for (var i = 1; i <= 9; i++)
                     {
-                        result.Append(GetTag(i, paging.Page));
+                        result.Append(GetTag(i, query.Paging.Page));
                     }
-                    result.Append(GetTag(totalPages, paging.Page, lastText));
+                    result.Append(GetTag(lastPage, query.Paging.Page, lastText));
                 }
             }
             tag.InnerHtml = result.ToString();

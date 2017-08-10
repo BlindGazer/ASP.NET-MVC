@@ -1,10 +1,9 @@
-﻿using FastBus.DAL.Objects;
+﻿using FastBus.Domain.Objects;
 
 namespace FastBus.Web.Models.User
 {
-    public class UserResultViewModel
+    public class UserResultViewModel : QueryResult<UserViewModel>
     {
-      public UserSearchModel Search { get; set; }
-      public QueryResult<UserViewModel> Result { get; set; }
+
     }
 }

@@ -1,0 +1,56 @@
+﻿@using Helpers = FastBus.Domain.Enums.UserRoles
+<div class="container">
+    <a class="app-bar-element branding" href="@Url.Action("Index", "Schedule")"><span class="mif-bus"></span> Fast Bus</a>
+    <span class="app-bar-divider"></span>
+    <ul class="app-bar-menu">
+        @if (User.IsInRole(Helpers.Admin))
+        {
+            <li>@Html.ActionLink("Сотрудники", "Index", "User")</li>
+        }
+        @if (User.IsInRole(Helpers.Admin) || User.IsInRole(Helpers.Dispatcher))
+        {
+            <li>
+                <a href="" class="dropdown-toggle">Маршруты</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li>@Html.ActionLink("Поиск рейса", "Index", "Schedule")</li>
+                    <li>@Html.ActionLink("Поиск маршрута", "Index", "Route")</li>
+                </ul>
+            </li>
+            <li>@Html.ActionLink("Водители", "Index", "Driver")</li>
+            <li>@Html.ActionLink("Машины", "Index", "Car")</li>
+            <li>@Html.ActionLink("Клиенты", "Index", "Buyer")</li>
+        }
+        else if (User.IsInRole(Helpers.Buyer))
+        {
+            <li>@Html.ActionLink("Рейсы", "Index", "Schedule")</li>
+            <li>@Html.ActionLink("Маршруты", "Index", "Route")</li>
+            <li>@Html.ActionLink("Заказать", "Index", "CustomRoute")</li>
+            <li>@Html.ActionLink("Билеты", "Index", "Ticket")</li>
+        }
+        else
+        {
+            <li>@Html.ActionLink("Рейсы", "Index", "Schedule")</li>
+            <li>@Html.ActionLink("Маршруты", "Index", "Route")</li>
+        }
+    </ul>
+    <ul class="app-bar-menu place-right">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li>
+                <a href="" class="dropdown-toggle">
+                    @User.Identity.Name <span class="mif-user"></span>
+                </a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li>@Html.ActionLink("Личный Кабинет", "Index", "Account")</li>
+                    <li class="divider"></li>
+                    <li>@Html.ActionLink("Выход", "LogOut", "Account")</li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li>@Html.ActionLink("Регистрация", "Register", "Account")</li>
+            <li>@Html.ActionLink("Вход", "Login", "Account")</li>
+        }
+    </ul>
+</div>

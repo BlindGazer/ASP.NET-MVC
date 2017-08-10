@@ -1,0 +1,15 @@
+﻿@using FastBus.Web.Models.Enums
+<script>
+    (function() {
+        @foreach (var level in (FlashLevel[]) Enum.GetValues(typeof(FlashLevel)))
+        {
+            string type = level.ToString().ToLower();
+
+            if (TempData.ContainsKey(string.Format("flash-{0}", type)))
+            {
+                IList<string> messages = (IList<string>) TempData[string.Format("flash-{0}", type)];
+                @: showNotify("@Html.Raw(string.Join("<br>", messages))", "@type");
+            }
+        }
+    })(jQuery);
+</script>

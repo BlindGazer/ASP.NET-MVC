@@ -1,23 +1,20 @@
 ﻿$().ready(function () {
-    $(".select2").select2();
-    //update valid state
-    $().ready(function () {
-        $(".select2").change(function () {
-            $("form").validate().element(".select2");
-        });
-    });
-    $(".datepicker").datepicker({
-        otherDays: true,
-        format: "dd/mm/yyyy"
-    }).keyup(function (e) {
-        if (e.keyCode === 8 || e.keyCode === 46) {
-            $(this).find("input").val(null);
-            $(this).datepicker();
-        }
-    });
+    InitSelect2();
+    InitDatepicker();
+    InitPanel();
 
-    $(function () {
-        $(".panel-collapse").panel();
-    });
+    // переопределение валидации на стороне клиента
+    $.validator.methods.range = function (value, element, param) {
+        var globalizedValue = value.replace(",", ".");
+        return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+    }
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+    }
 
+    var animationBlock = $(".animation-block");
+    $(document).on({
+        ajaxStart: function () { animationBlock.show() },
+        ajaxStop: function () { animationBlock.hide() }
+    });
 });

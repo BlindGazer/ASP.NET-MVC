@@ -1,0 +1,14 @@
+﻿@using FastBus.Web.Helpers
+@model FastBus.Domain.Objects.QueryResult
+<div class="grid">
+    <div class="row cells2">
+        <div class="cell">
+            @Html.PageLinks(Model)
+        </div>
+        <div class="cell align-right padding10 no-padding-right">
+            <span class="bg-grayLighter padding10">
+                Запросу удовлетворяет @Model.TotalFiltered из <span class="fg-lightBlue">@Model.Total</span>
+            </span>
+        </div>
+    </div>
+</div>

@@ -1,15 +1,22 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 0px;
     padding-bottom: 20px;
 }
-
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+body:before {
+  content: "";
+  background-color: gray;
+  opacity: 0.15;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;   
 }
 
-
+.margin-right5 {
+    margin-right: 5px;
+}
 
 .margin-top5 {
     margin-top: 5px;
@@ -58,26 +65,41 @@
   float: left !important;
 }
 
-.login-form {
-    background-color: #6fa9c0;
+.register-form::after,
+.login-form::after {
+  content: "";
+  background-image: url(images/LogInBackground.jpg);
+  opacity: 0.65;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;   
 }
-
+.register-form form,
 .login-form form {
     padding: 25px;
-    width: 30rem;
-    /*height: 20.75rem;*/
     height: auto;
     position: fixed;
     top: 35%;
     left: 50%;
     margin-top: -10.375rem;
-    margin-left: -15rem;
     background-color: #ffffff;
     background-color: rgba(255,255,255,0.95);
     opacity: 0;
     -webkit-transform: scale(.8);
     transform: scale(.8);
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+}
+.login-form form {
+    width: 30rem;
+    margin-left: -15rem;
+}
+
+.register-form form {
+    width: 45rem;
+    margin-left: -22.5rem;
 }
 .validation-summary-errors {
     color: #a94442;
@@ -111,16 +133,74 @@ select.input-validation-error+.select2 .select2-selection{
 .field-validation-error {
     color: #ce352c;
 }
-.calendar-grid .mif-cross {
-    position: absolute;
-    top: 10px;
-    right: -16px;
-    cursor: pointer;
-}
-.calendar-grid .mif-cross:hover {
-    color: #59cde2;
-}
-
 .label-control {
     padding-top: 10px;
+}
+
+.fb-hader {
+    margin-top: 20px;
+    background-color: #1ba1e2;
+    color: white;
+    padding: 8px 5px 5px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+    height: 2.625rem;
+    font: 500 1.125rem/1.1 "Segoe UI", "Open Sans", sans-serif, serif;
+}
+
+.fb-row {
+    background-color: white;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.fb-hader+.fb-row {
+    margin-top: 0.5px;
+}
+
+.panel-collapse {
+}
+
+.datepicker {
+    
+}
+.deleteButton {
+    
+}
+
+td.date {
+    color: rgb(96, 92, 92);
+    font-size: 12px;
+}
+
+.op-dark {
+    background-color: rgba(22, 22, 22, 0.5);
+}
+#scheduleDetails {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+    margin-top: 10px;
+}
+
+h4.title{
+    background: #1ba1e2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: white;
+}
+
+hr.gray {
+    background: transparent;
+    border-bottom: 1px solid #dddddd;
+}
+
+.max-width100 {
+    max-width: 100%;
+}
+
+.notify.notify-message {
+    margin: 10px;
+    max-width: 100%;
 }

@@ -1,0 +1,21 @@
+﻿@model FastBus.Domain.Entities.Buyer
+<dl class="horizontal">
+    <dt>Почта:</dt>
+    <dd>@Model.Email</dd>
+    <dt>Логин: </dt>
+    <dd>@Model.UserName</dd>
+    <dt>ФИО</dt>
+    <dd>@Model.LastName @Model.FirstName @Model.Patronymic</dd>
+    @if (Model.DateBorn.HasValue)
+    {
+        <dt>@Html.DisplayNameFor(model => model.DateBorn)</dt>
+        <dd>@Model.DateBorn.Value.ToLongDateString()</dd>
+    }
+    <dt>Статистика</dt>
+    <dd>
+        <span class="tag success">Куплено: @Model.Tickets.Count(x => x.IsPaid)</span>
+        <span class="tag info">Забронированно: @Model.Tickets.Count(x => x.IsReserve)</span>
+        <span class="tag alert">Неоплаченных: @Model.Tickets.Count(x => x.IsDisabled)</span>
+        <span class="tag warning">Персональных заказов: @Model.Orders.Count</span>
+    </dd>
+</dl>

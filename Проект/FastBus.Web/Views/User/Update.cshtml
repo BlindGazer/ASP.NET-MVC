@@ -1,0 +1,21 @@
+﻿@model FastBus.Web.Models.User.EditUserViewModel
+@{
+    ViewBag.Title =  ViewBag.PageTitle = "Редактирование пользователя";
+}
+<div class="fb-row">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x=>x.Id)
+        @Html.ValidationSummary(true)
+        <div class="grid">
+            @{Html.RenderPartial("Partials/_Edit", Model);}
+            <div class="row cells12">
+                <div class="offset2 cell colspan12">
+                    <input type="submit" value="Обновить" class="button primary"/>
+                    @Html.ActionLink("Отмена", "Index", "User", null, new {@class = "button"})
+                </div>
+            </div>
+        </div>
+    }
+</div>

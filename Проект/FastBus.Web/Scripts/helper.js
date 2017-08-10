@@ -24,6 +24,39 @@ function showNotify(text, type, title, timeout) {
     });
 };
 
+function showResponseNotify(response, container) {
+    if (response && response.Message) {
+        showNotify(response.Message, response.IsSuccessful ? "success" : "alert");
+        if (container) {
+            $(container).find(".validation-summary-errors").remove();
+        }
+    }
+};
+
+function InitSelect2() {
+    $("select.select2").select2({ language: "ru" });
+    //update valid state
+    //$("select.select2").change(function () {
+    //   $("form").validate().element(".select2");
+    //});
+}
+
+function InitDatepicker() {
+    $(".datepicker").datepicker({
+        otherDays: true,
+        format: "dd.mm.yyyy"
+    }).keyup(function (e) {
+        if (e.keyCode === 8 || e.keyCode === 46) {
+            $(this).find("input").val(null);
+            $(this).datepicker();
+        }
+    });
+}
+
+function InitPanel() {
+    $(".panel-collapse").panel();
+}
+
 function Pagination(configuration) {
     var self = this;
     self.conf = {
@@ -31,23 +64,20 @@ function Pagination(configuration) {
         contentSelector: configuration.contentSelector,
         pageSelector: configuration.pageSelector,
         lengthSelector: configuration.lengthSelector,
-        orderBySelector: configuration.orderBySelector,
         orderByDescSelector: configuration.orderByDescSelector,
         callback: configuration.callback,
+        deleteCallback: configuration.deleteCallback,
         resetSelector: configuration.resetSelector,
+        resetCallback: configuration.resetCallback,
         submitSelector: configuration.submitSelector ? configuration.submitSelector : "input[type=submit], button[type=submit]"
     };
     if (conf.formId == null || conf.formId === "") return null;
 
-    self.initPagingEvent = function() {
+    self.initPagingEvent = function () {
         $(self.conf.lengthSelector)
             .change(function () {
                 self.search();
             });
-        //$(self.conf.orderBySelector)
-        //    .onChanged(function () {
-        //        self.search();
-        //    });
         $(configuration.pageSelector)
             .click(function () {
                 self.search($(this).attr("page"));
@@ -70,7 +100,12 @@ function Pagination(configuration) {
     $(self.conf.resetSelector)
         .click(function () {
             $(self.conf.formId)[0].reset();
-            $(".select2").select2();
+            if (self.conf.resetCallback)
+                self.conf.resetCallback();
+            else {
+                InitSelect2();
+                self.search();
+            }
         });
     self.initPagingEvent();
 
@@ -87,10 +122,13 @@ function Pagination(configuration) {
 
         self.progress(true);
         $.post(url, query).done(function (data) {
-                self.conf.callback ? self.conf.callback(data) : $(self.conf.contentSelector).html(data);
-                self.initPagingEvent();
-                self.progress(false);
-        }).fail(function() {
+            self.conf.callback ? self.conf.callback(data) : $(self.conf.contentSelector).html(data);
+            self.initPagingEvent();
+            if (self.conf.deleteCallback) {
+                self.conf.deleteCallback();
+            }
+            self.progress(false);
+        }).fail(function () {
             self.progress(false);
         });
     }
@@ -98,3 +136,8 @@ function Pagination(configuration) {
     return self;
 }
 
+function InitAjaxFormValidator(form) {
+    $(form).removeData("validator");
+    $(form).removeData("unobtrusiveValidation");
+    $.validator.unobtrusive.parse(form);
+}

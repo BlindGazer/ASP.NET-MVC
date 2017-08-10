@@ -1,0 +1,10 @@
+﻿@model FastBus.Web.Models.Route.RouteViewModel
+@{
+    ViewBag.Title = ViewBag.PageTitle = "Обновить маршрут";
+}
+<div class="fb-row">
+    @using (Html.BeginForm())
+    {
+        Html.RenderPartial("Partials/_Edit", Model);
+    }
+</div>

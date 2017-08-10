@@ -1,9 +1,8 @@
-﻿using FastBus.DAL.Objects;
+﻿using FastBus.Domain.Objects;
+
 namespace FastBus.Web.Models.Car
 {
-    public class CarResultViewModel
+    public class CarResultViewModel : QueryResult<CarViewModelWithDrivers>
     {
-      public CarSearchModel Search { get; set; }
-      public QueryResult<CarViewModel> Result { get; set; }
     }
 }

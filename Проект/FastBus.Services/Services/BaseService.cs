@@ -1,4 +1,4 @@
-﻿using FastBus.Repositories.Contracts;
+﻿using FastBus.DAL.Contracts;
 
 namespace FastBus.Services.Services
 {

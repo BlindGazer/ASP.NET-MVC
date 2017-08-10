@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
-using FastBus.DAL.Objects;
+using FastBus.Domain.Objects;
 using FastBus.Web.Helpers;
 
 namespace FastBus.Web.Models.User
@@ -12,7 +12,7 @@ namespace FastBus.Web.Models.User
     public enum UserOrderByField
     {
         [Display(Name = "ФИО")]
-        Name,
+        FirstName,
         [Display(Name = "Логин")]
         UserName,
         [Display(Name = "Роль")]
@@ -30,10 +30,10 @@ namespace FastBus.Web.Models.User
         public string UserName { get; set; }
 
         [DisplayName("Дата регистрации от")]
-        public DateTime? RegisterDateBegin { get; set; }
+        public DateTime? RegisterDateFrom { get; set; }
 
         [DisplayName("Дата регистрации до")]
-        public DateTime? RegisterDateEnd { get; set; }
+        public DateTime? RegisterDateTo { get; set; }
 
         [DisplayName("Роль")]
         public int? Role { get; set; }
@@ -42,15 +42,8 @@ namespace FastBus.Web.Models.User
 
         public UserSearchModel()
         {
-            var list = SelectListHelper.GetFields<UserOrderByField>();
-            OrderByFields = list;
-            OrderBy = new ColumnOrder
-            {
-                Column = list?.First().Value,
-                Direction = SortDirection.Asc
-
-            };
-            Paging = new Paging();
+            OrderByFields = SelectListHelper.GetFields<UserOrderByField>();
+            OrderBy = new ColumnOrder(OrderByFields.First().Value);
         }
 
     }

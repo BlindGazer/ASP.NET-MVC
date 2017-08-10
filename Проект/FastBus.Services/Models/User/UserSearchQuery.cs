@@ -1,5 +1,5 @@
 ﻿using System;
-using FastBus.DAL.Objects;
+using FastBus.Domain.Objects;
 
 namespace FastBus.Services.Models.User
 {
@@ -7,9 +7,8 @@ namespace FastBus.Services.Models.User
     {
         public string Name { get; set; }
         public string UserName { get; set; }
-        public DateTime? RegisterDateBegin { get; set; }
-        public DateTime? RegisterDateEnd { get; set; }
+        public DateTime? RegisterDateFrom { get; set; }
+        public DateTime? RegisterDateTo { get; set; }
         public int? Role { get; set; }
-
     }
 }

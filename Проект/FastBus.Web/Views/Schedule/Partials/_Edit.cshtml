@@ -1,0 +1,49 @@
+﻿@using FastBus.Web.Helpers
+@model FastBus.Web.Models.Route.BaseScheduleEditModel
+@Html.HiddenFor(model => model.Id)
+<div class="row cells12">
+    @Html.LabelFor(model => model.RouteId, new { @class = "cell colspan2 label-control" })
+    <div class="input-control text cell colspan10">
+        @Html.DropDownListFor(x => x.RouteId, SelectListHelper.GetRoutes(), "Выберите маршрут", new { @class = "select2" })
+        @Html.ValidationMessageFor(model => model.RouteId)
+    </div>
+</div>
+<div class="row cells12">
+    @Html.LabelFor(model => model.Number, new { @class = "cell colspan2 label-control" })
+    <div class="input-control text cell colspan10">
+        @Html.EditorFor(x => x.Number)
+        @Html.ValidationMessageFor(model => model.Number)
+    </div>
+</div>
+<div class="row cells12">
+    @Html.LabelFor(model => model.CarId, new { @class = "cell colspan2 label-control" })
+    <div class="input-control text cell colspan10">
+        @Html.DropDownListFor(x => x.CarId, SelectListHelper.GetCars(), "Выберите машину", new { @class = "select2" })
+        @Html.ValidationMessageFor(model => model.CarId)
+    </div>
+</div>
+<div class="row cells12">
+    @Html.LabelFor(model => model.Drivers, new { @class = "cell colspan2 label-control" })
+    <div class="input-control text cell colspan10">
+        @Html.ListBoxFor(x => x.Drivers, SelectListHelper.GetDrivers(Model.CarId), new { @class = "select2" })
+        @Html.ValidationMessageFor(model => model.Drivers)
+    </div>
+</div>
+<div class="row cells12">
+    @Html.LabelFor(model => model.Seats, new { @class = "cell colspan2 label-control" })
+    <div class="input-control text cell colspan4">
+        @Html.EditorFor(x => x.Seats)
+        @Html.ValidationMessageFor(model => model.Seats)
+    </div>
+    @Html.LabelFor(model => model.Cost, new { @class = "cell colspan2 label-control" })
+    <div class="input-control text cell colspan4">
+        @Html.TextBoxFor(x => x.Cost, Model.Cost.ToString("F1"))
+        @Html.ValidationMessageFor(model => model.Cost)
+    </div>
+</div>
+<div class="row cells12">
+    <div class="cell colspan12 align-right">
+        <input type="submit" value="Сохранить" class="button primary" />
+        @Html.ActionLink("Отмена", "Index", "Schedule", null, new { @class = "button" })
+    </div>
+</div>

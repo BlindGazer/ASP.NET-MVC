@@ -1,11 +1,17 @@
-﻿@{
-    ViewBag.Title = "Index";
-
+﻿@using FastBus.Web.Models.User
+@using Roles = FastBus.Domain.Enums.UserRoles;
+@{
+    ViewBag.Title = "Личный кабинет";
+    var isUser = User.IsInRole(Roles.Buyer);
 }
-
-<h2>Index</h2>
-@if (ViewBag.Users == null)
+@if (isUser)
 {
-    <p>Пользователей нет</p>
+    Html.RenderPartial("Partials/_BuyerTabs");
 }
-
+else
+{
+    ViewBag.PageTitle = "Смена пароля";
+    <div class="fb-row">
+       @Html.Partial("Partials/_EditPassword", new EditPasswordModel())
+    </div>
+}

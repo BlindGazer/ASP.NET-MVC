@@ -1,19 +1,9 @@
-﻿@model FastBus.Web.Models.LoginViewModel
-
+﻿@model FastBus.Web.Models.User.LoginViewModel
 @{
     ViewBag.Title = "Авторизация";
-    Layout = null;
+    Layout = "~/Views/Shared/_Empty.cshtml";
 }
-@using System.Web.Optimization
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - FastBus</title>
-    @Styles.Render("~/Content/main-css")
-</head>
-<body class="login-form">
+<div class="login-form">
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -21,25 +11,21 @@
         <h1 class="align-center">Вход в систему</h1>
         <hr />
         @Html.ValidationSummary()
-            <div>
-                <div class="input-control modern text iconic full-size" data-role="input">
-                    @Html.EditorFor(model => model.UserName)
-                    <span class="label">@Html.DisplayNameFor(model => model.UserName)</span>
-                    <span class="informer">Введите логин или почту</span>
-                    <span class="placeholder">@Html.DisplayNameFor(model => model.UserName)</span>
-                    <span class="icon mif-user"></span>
-                </div>
-            </div>
-            <div>
-                <div class="input-control modern password iconic full-size" data-role="input">
-                    @Html.EditorFor(model => model.Password)
-                    <span class="label">@Html.LabelFor(model => model.Password)</span>
-                    <span class="informer">Введите пароль</span>
-                    <span class="placeholder">@Html.LabelFor(model => model.Password)</span>
-                    <span class="icon mif-lock"></span>
-                    <button class="button helper-button reveal"><span class="mif-looks"></span></button>
-                </div>
-            </div>
+        <div class="input-control modern text iconic full-size" data-role="input">
+            @Html.EditorFor(model => model.UserName)
+            <span class="label">@Html.DisplayNameFor(model => model.UserName)</span>
+            <span class="informer">Введите логин или почту</span>
+            <span class="placeholder">@Html.DisplayNameFor(model => model.UserName)</span>
+            <span class="icon mif-user"></span>
+        </div>
+        <div class="input-control modern password iconic full-size" data-role="input">
+            @Html.EditorFor(model => model.Password)
+            <span class="label">@Html.LabelFor(model => model.Password)</span>
+            <span class="informer">Введите пароль</span>
+            <span class="placeholder">@Html.LabelFor(model => model.Password)</span>
+            <span class="icon mif-lock"></span>
+            <button class="button helper-button reveal"><span class="mif-looks"></span></button>
+        </div>
         <div class="margin-top10">
             @Html.LabelFor(model => model.RememberMe)
             <label class="switch margin5">
@@ -51,7 +37,7 @@
             <a class="button" href="@Url.Action("Register")">
                 <span class="mif-user-plus"></span> Регистрация
             </a>
-            <a class="button" href="@Url.Action("Index","Routes")">
+            <a class="button" href="@Url.Action("Index", "Schedule")">
                 <span class="mif-home"></span> На главную
             </a>
             <button type="submit" class="button success pull-right block-shadow">
@@ -59,7 +45,9 @@
             </button>
         </div>
     }
-    @Scripts.Render("~/bundles/general-scripts")
+</div>
+
+@section scripts{
     <script>
         $(function () {
             var form = $(".login-form form");
@@ -73,5 +61,4 @@
             });
         });
     </script>
-</body>
-</html>
+}

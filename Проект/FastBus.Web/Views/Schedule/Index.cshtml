@@ -1,0 +1,112 @@
+﻿@using FastBus.Domain.Enums
+@model FastBus.Web.Models.Route.ScheduleSearchModel
+@{
+    ViewBag.Title = "Рейсы";
+    bool isAdmin = User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Dispatcher);
+}
+<div class="tabcontrol tab-25p margin-top15">
+    <ul class="tabs">
+        <li class="active"><a href="#">1) Выбор рейса</a></li>
+        <li><a href="#">2) Подробная информация</a></li>
+        <li><a href="#">3) Способ оплаты</a></li>
+        <li><a href="#">4) Проверка данных</a></li>
+    </ul>
+    <div class="frames">
+        <div class="frame bg-white block-shadow">
+            <div id="searchBlock">
+                @using (Html.BeginForm("Search", "Schedule", FormMethod.Post, new {id = "searchForm"}))
+                {
+                    <div class="panel panel-collapse shadow margin-top20">
+                        <div class="heading">
+                            <span class="title">Поиск рейса</span>
+                        </div>
+                        <div class="content padding10 bg-white">
+                            <div class="grid">
+                                <div class="row cells3">
+                                    <div class="cell">
+                                        @Html.LabelFor(x => x.Departure)
+                                        <div class="input-control text full-size">
+                                            @Html.DropDownListFor(x => x.Departure, new List<SelectListItem>())
+                                        </div>
+                                    </div>
+                                    <div class="cell">
+                                        @Html.LabelFor(x => x.Destination)
+                                        <div class="input-control text full-size">
+                                            @Html.DropDownListFor(x => x.Destination, new List<SelectListItem>())
+                                        </div>
+                                    </div>
+                                    <div class="cell">
+                                        @Html.LabelFor(x => x.WayPoint)
+                                        <div class="input-control text full-size">
+                                            @Html.EditorFor(x => x.WayPoint)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row cells3">
+                                    <div class="cell">
+                                        @Html.LabelFor(x => x.DepartureDate)
+                                        <div class="input-control text full-size datepicker">
+                                            <input type="text" name="DepartureDate" value="@Model.DepartureDate.ToString("d")"/>
+                                            <button class="button"><span class="mif-calendar"></span></button>
+                                        </div>
+                                    </div>
+                                    <div class="cell">
+                                        @Html.LabelFor(x => x.DestinationDate)
+                                        <div class="input-control text full-size datepicker">
+                                            <input type="text" name="DestinationDate" value="@Model.DestinationDate.ToString("d")"/>
+                                            <button class="button"><span class="mif-calendar"></span></button>
+                                        </div>
+                                    </div>
+                                    <div class="cell padding-top20">
+                                        <div class="align-right">
+                                            <button type="button" class="button" id="resetSearch"><span class="mif-cross"></span></button>
+                                            <button type="submit" class="button"><span class="mif-search"></span> Искать</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    if (isAdmin)
+                    {
+                        <div class="align-right margin10 no-margin-right">
+                            <a class="button primary" href="@Url.Action("Add")">
+                                <span class="mif-user-plus"></span> Добавить
+                            </a>
+                        </div>
+                    }
+                    <div id="searchContent" class="margin-top20">
+
+                    </div>
+                }
+            </div>
+            <div id="scheduleDetails" style="display: none;">
+            </div>
+            <div id="paymentDetails" style="display: none;">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/route/schedule.js"></script>
+    <script>
+        var helper = InitSchedule({
+            detailsUrl: "@Url.Action("Details")",
+            departureUrl: "@Url.Action("GetDepartures")",
+            destinationUrl: "@Url.Action("GetDestinations")",
+            departurePlaceholder: "@Html.DisplayNameFor(x => x.Departure)",
+            destinationPlaceholder: "@Html.DisplayNameFor(x => x.Destination)"
+        });
+
+        var paging = Pagination({
+            formId: "#searchForm",
+            contentSelector: "#searchContent",
+            pageSelector: ".pagination .item",
+            lengthSelector: "#lengthSearch",
+            resetSelector: "#resetSearch",
+            callback: helper.updateCallback,
+            resetCallback: helper.resetCallback
+        });
+    </script>
+}

@@ -1,0 +1,40 @@
+﻿@model FastBus.Web.Models.Route.TicketResultViewModel
+@if (Model.Data != null && Model.Data.Count > 0)
+{
+    <table class="table bordered hovered striped shadow">
+        <thead>
+        <tr>
+            <th>№ рейса</th>
+            <th>Пункт отправления</th>
+            <th>Пункт прибытия</th>
+            <th>Отпр</th>
+            <th>Приб</th>
+            <th>В пути</th>
+            <th>Куплен/забронирован</th>
+            <th>Стоимость</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>@item.Number</td>
+                <td>@item.Departure</td>
+                <td>@item.Destination</td>
+                <td class="date">@item.DepartureDate.ToString("g")</td>
+                <td class="date">@item.DestinationDate.ToString("g")</td>
+                <td>@item.Time</td>
+                <td>@item.Status</td>
+                <td>@item.CostFormated</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    { Html.RenderPartial("Partials/_Paging", Model); }
+}
+else
+{
+    <script>
+        showNotify("По запросу результатов не найдено")
+    </script>
+}

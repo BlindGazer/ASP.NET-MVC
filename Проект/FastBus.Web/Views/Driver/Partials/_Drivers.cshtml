@@ -1,0 +1,50 @@
+﻿@model FastBus.Web.Models.Driver.DriverResultViewModel
+@if (Model.Data.Count > 0)
+{
+        <table class="table bordered hovered striped shadow">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>ФИО</th>
+                    <th>Дата рождения</th>
+                    <th>Дата регистрации</th>
+                    <th>Машины</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var driver in Model.Data)
+                {
+                    <tr>
+                        <td>@driver.Id</td>
+                        <td>@driver.FullName</td>
+                        <td>@(driver.DateBorn?.ToLongDateString())</td> 
+                        <td>@driver.RegistredDate.ToLongDateString()</td> 
+                        <td>
+                            @foreach (var car in driver.Cars)
+                            {
+                                @Html.ActionLink(car.Name, "Update", "Car", new { id = car.Id }, 
+                                    new { target = "_blank", @class = "button small-button" })
+                                <br />
+                            }
+                        </td>
+                        <td>
+                            <a class="button primary" href="@Url.Action("Update", new {username = driver.UserName})" title="Редактировать">
+                                <span class="mif-pencil"></span>
+                            </a>
+                            <button class="button danger deleteButton" username="@driver.UserName" title="Удалить" type="button">
+                                <span class="mif-bin"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        Html.RenderPartial("Partials/_Paging", Model);
+}
+else
+{
+    <script>
+        showNotify("По запросу результатов не найдено")
+    </script>
+}

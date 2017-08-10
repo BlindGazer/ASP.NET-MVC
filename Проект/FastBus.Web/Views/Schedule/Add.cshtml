@@ -1,0 +1,95 @@
+﻿@model FastBus.Web.Models.Route.ScheduleAddModel
+@{
+    ViewBag.Title = ViewBag.PageTitle = "Добавление рейса";
+}
+<div class="fb-row">
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+        <div id="dates">
+
+        </div>
+        <div class="grid">
+            <div class="row cells12">
+                <div class="cell colspan4">
+                    <h5>@Html.DisplayNameFor(model => model.DepartureDates)</h5>
+                    <div id="DepartureDates" data-role="calendar" data-week-start="1"
+                         data-multi-select="true" data-buttons="false" data-preset="@Model.GetDepartureDates()">
+                    </div>
+                    @Html.ValidationMessageFor(model => model.DepartureDates)
+                    @Html.ValidationMessageFor(model => model.DepartureHours)
+                    @Html.ValidationMessageFor(model => model.DepartureMinutes)
+                </div>
+                <div class="cell colspan2 padding-top30">
+                    @Html.LabelFor(model => model.DepartureHours, new { @class = "label-control" })
+                    <div class="input-control text full-size">
+                        @Html.EditorFor(x => x.DepartureHours, new { placeholder = "часы", @class = "input-time" })
+                    </div>
+                    @Html.LabelFor(model => model.DepartureMinutes, new { @class = "label-control" })
+                    <div class="input-control text full-size">
+                        @Html.EditorFor(x => x.DepartureMinutes, new { placeholder = "минуты", @class = "input-time" })
+                    </div>
+                </div>
+                <div class="cell colspan4">
+                    <h5>@Html.DisplayNameFor(model => model.DestinationDates)</h5>
+                    <div id="DestinationDates" data-role="calendar" data-week-start="1"
+                         data-multi-select="true" data-buttons="false" data-preset="@Model.GetDestinationDates()">
+                    </div>
+                    @Html.ValidationMessageFor(model => model.DestinationDates)
+                    @Html.ValidationMessageFor(model => model.DestinationHours)
+                    @Html.ValidationMessageFor(model => model.DestinationMinutes)
+                </div>
+                <div class="cell colspan2 padding-top30">
+                    @Html.LabelFor(model => model.DestinationHours, new { @class = "label-control" })
+                    <div class="input-control text full-size">
+                        @Html.EditorFor(x => x.DestinationHours, new { placeholder = "часы", @class = "input-time" })
+                    </div>
+                    @Html.LabelFor(model => model.DestinationMinutes, new { @class = "label-control" })
+                    <div class="input-control text full-size">
+                        @Html.EditorFor(x => x.DestinationMinutes, new { placeholder = "минуты", @class = "input-time" })
+                    </div>
+                </div>
+            </div>
+            @{Html.RenderPartial("Partials/_Edit", Model);}
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script>
+        $("#CarId").change(function () {
+            $.post("@Url.Action("Drivers", "Driver")", { carId: $(this).val() },
+                function (data) {
+                    $("#Drivers").html("");
+                    $.each(data, function (key, item) {
+                        $("#Drivers").append($("<option></option>")
+                            .attr("value", item.Value)
+                            .text(item.Text));
+                    });
+                    $("#Drivers").select2({
+                        language: "ru"
+                    });
+                });
+        });
+
+        $("form").submit(function () {
+            if ($(this).valid()) {
+                $.each($("#DepartureDates").calendar('getDates'), function (key, item) {
+                    $("<input>").attr({
+                        type: "hidden",
+                        name: "DepartureDates[" + key + "]",
+                        value: item
+                    }).appendTo("form");
+                });
+                $.each($("#DestinationDates").calendar("getDates"), function (key, item) {
+                    $("<input>").attr({
+                        type: "hidden",
+                        name: "DestinationDates[" + key + "]",
+                        value: item
+                    }).appendTo("form");
+                });
+            }
+        });
+    </script>
+
+}

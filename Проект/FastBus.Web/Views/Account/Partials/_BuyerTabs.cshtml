@@ -1,0 +1,31 @@
+﻿@using FastBus.Web.Models.User
+<div class="tabcontrol tab-25p margin-top15"  data-role="tabcontrol">
+    <ul class="tabs">
+        <li class="active"><a href="#personalTab">Личные данные</a></li>
+        <li><a href="#passwordTab">Изменить пароль</a></li>
+        <li><a href="#ticketsTab">Ближайщие рейсы</a></li>
+        <li><a href="#historyOrder">История личных заказов</a></li>
+    </ul>
+    <div class="frames">
+        <div class="frame bg-white" id="personalTab">
+            @Html.Action("BuyerInfo")
+        </div>
+        <div class="frame bg-white" id="passwordTab">
+            @{Html.RenderPartial("Partials/_EditPassword", new EditPasswordModel());}
+        </div>
+        <div class="frame bg-white" id="ticketsTab">
+            <ul class="step-list no-numbers">
+                <li>
+                    <h4 class="no-margin-top">Рейсы на ближающую неделю</h4>
+                    <hr class="bg-red">
+                    <div>@Html.Action("GetUpcomingTicket", "Account")</div>
+                </li>
+            </ul>
+        </div>
+        <div class="frame bg-white" id="historyOrder">
+            <div class="notify notify-message info">
+                <span class="notify-text">У вас нет заказных рейсов</span>
+            </div>
+        </div>
+    </div>
+</div>

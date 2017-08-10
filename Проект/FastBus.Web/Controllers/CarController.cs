@@ -1,10 +1,9 @@
 ﻿using System.Web.Mvc;
 using AutoMapper;
-using FastBus.DAL.Enums;
-using FastBus.DAL.Objects;
+using FastBus.Domain.Enums;
 using FastBus.Services.Contracts;
 using FastBus.Services.Models.Car;
-using FastBus.Web.Attributes;
+using FastBus.Web.Extensions;
 using FastBus.Web.Models.Car;
 
 namespace FastBus.Web.Controllers
@@ -13,9 +12,8 @@ namespace FastBus.Web.Controllers
     public class CarController : BaseController
     {
         private readonly ICarService _carService;
-        #region publicMethod
 
-        public CarController(ICarService carService, IUserService userService)
+        public CarController(ICarService carService)
         {
             _carService = carService;
         }
@@ -27,29 +25,40 @@ namespace FastBus.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Get(CarSearchModel search)
+        public ActionResult Search(CarSearchModel search)
         {
             var result = _carService.Where(Mapper.Map<CarSearchQuery>(search));
-            return PartialView("Partials/GetCars", new CarResultViewModel
-            {
-                Result = Mapper.Map<QueryResult<CarViewModel>>(result),
-                Search = search
-            });
+            return PartialView("Partials/_Cars", Mapper.Map<CarResultViewModel>(result));
         }
 
         [HttpGet]
         public ActionResult Add()
         {
-            return View("Update");
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Add(AddCarViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+            
+            _carService.Add(Mapper.Map<CarModelWithDrivers>(model));
+            this.FlashSuccess("Данные успешно добавлены");
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public ActionResult Update(int? id)
         {
-            if(id == null || id <= 0) return RedirectToAction("Index");
+            if(id == null || id <= 0)
+                return RedirectToAction("Index");
+
             var model = Mapper.Map<AddCarViewModel>(_carService.Get(id.Value));
 
-            if(model == null) return RedirectToAction("Index");
+            if(model == null)
+                return RedirectToAction("Index");
+
             return View(model);
         }
         
@@ -58,18 +67,16 @@ namespace FastBus.Web.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            if (model.Id.HasValue)
-            {
-                _carService.Update(Mapper.Map<CarModel>(model));
-            }
-            else
-            {
-                _carService.Add(Mapper.Map<CarModel>(model));
-            }
+            _carService.Update(Mapper.Map<CarModelWithDrivers>(model));
+            this.FlashSuccess("Данные успешно обновленны");
+
             return RedirectToAction("Index");
         }
 
-        #endregion
-
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            return Json(_carService.Delete(id));
+        }
     }
 }

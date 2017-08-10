@@ -1,10 +1,17 @@
-﻿using FastBus.DAL.Concrete.Entities.Identity;
+﻿using System.Threading.Tasks;
+using System.Web.Mvc;
+using AutoMapper;
+using FastBus.Domain.Entities;
+using FastBus.Domain.Entities.Identity;
+using FastBus.Domain.Enums;
+using FastBus.Persistence;
+using FastBus.Web.Extensions;
+using FastBus.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using FastBus.DAL.Concrete;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
 
 namespace FastBus.Web
 {
@@ -58,6 +65,54 @@ namespace FastBus.Web
         public static FastBusUserManager Create(IdentityFactoryOptions<FastBusUserManager> options, IOwinContext context)
         {
             return new FastBusUserManager(new FastBusUserStore(context.Get<FastBusDbContext>()));
+        }
+
+        public async Task<UserRegisterResponse> Register(RegisterUserViewModelWithRole model, ModelStateDictionary state)
+        {
+            IdentityResult result;
+            switch (model.UserRole)
+            {
+                case UserRoles.Dispatcher:
+                    var dispatcher = Mapper.Map<Dispatcher>(model);
+                    result = await CreateAsync(dispatcher, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        dispatcher = await FindByNameAsync(dispatcher.UserName) as Dispatcher;
+                        if (dispatcher == null) break;
+
+                        await AddToRolesAsync(dispatcher.Id, model.UserRole);
+                        return new UserRegisterResponse("Диспетчет успешно добавлен");
+                    }
+                    break;
+                case UserRoles.Driver:
+                    var driver = Mapper.Map<Driver>(model);
+                    result = await CreateAsync(driver, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        driver = await FindByNameAsync(driver.UserName) as Driver;
+                        if (driver == null) break;
+
+                        await AddToRolesAsync(driver.Id, model.UserRole);
+                        return new UserRegisterResponse("Водитель успешно добавлен");
+                    }
+                    break;
+                default:
+                    var user = Mapper.Map<User>(model);
+                    result = await CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        user = await FindByNameAsync(user.UserName);
+
+                        await AddToRolesAsync(user.Id, model.UserRole);
+                        return new UserRegisterResponse("Пользователь успешно добавлен");
+                    }
+                    break;
+            }
+            state.AddIdentityErrors(result);
+            return new UserRegisterResponse(false);
         }
     }
 

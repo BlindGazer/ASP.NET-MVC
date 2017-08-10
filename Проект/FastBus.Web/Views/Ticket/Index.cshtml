@@ -1,0 +1,132 @@
+﻿@using FastBus.Web.Helpers
+@model FastBus.Web.Models.Route.TicketSearchModel
+@{
+    ViewBag.Title = "Билеты";
+}
+@using (Html.BeginForm("Search", "Ticket", FormMethod.Post, new { id = "searchForm"}))
+{
+    <div class="panel panel-collapse shadow margin-top20">
+        <div class="heading">
+            <span class="title">Поиск билета</span>
+        </div>
+        <div class="content padding10 bg-white">
+            <div class="grid">
+                <div class="row cells3">
+                    <div class="cell">
+                        @Html.LabelFor(x => x.Departure)
+                        <div class="input-control text full-size">
+                            @Html.DropDownListFor(x => x.Departure, new List<SelectListItem>())
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.Destination)
+                        <div class="input-control text full-size">
+                            @Html.DropDownListFor(x => x.Destination, new List<SelectListItem>())
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.IsPayment, "Тип билета")
+                        <div class="input-control text full-size">
+                            @Html.DropDownListFor(x => x.IsPayment, SelectListHelper.GetTicketsTypes())
+                        </div>
+                    </div>
+                </div>
+                <div class="row cells3">
+                    <div class="cell">
+                        @Html.LabelFor(x => x.DepartureDate)
+                        <div class="input-control text full-size datepicker">
+                            <input type="text" name="DepartureDate" value="@Model.DepartureDate.ToString("d")"/>
+                            <button class="button"><span class="mif-calendar"></span></button>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        @Html.LabelFor(x => x.DestinationDate)
+                        <div class="input-control text full-size datepicker">
+                            <input type="text" name="DestinationDate" value="@Model.DestinationDate.ToString("d")"/>
+                            <button class="button"><span class="mif-calendar"></span></button>
+                        </div>
+                    </div>
+                    <div class="cell padding-top20">
+                        <div class="align-right">
+                            <button type="button" class="button" id="resetSearch"><span class="mif-cross"></span></button>
+                            <button type="submit" class="button"><span class="mif-search"></span> Искать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="searchContent" class="margin-top20">
+
+    </div>
+}
+@section scripts{
+    <script>
+        function processResults(data) {
+            return {
+                results: $.map(data, function(item) {
+                    return {
+                        text: item,
+                        slug: item,
+                        id: item
+                    }
+                })
+            };
+        }
+
+        function initSelector() {
+            $("#Departure").select2({
+                minimumInputLength: 2,
+                ajax: {
+                    url: "@Url.Action("GetDepartures", "Schedule")",
+                    delay: 250,
+                    dataType: 'json',
+                    type: "POST",
+                    data: function (params) {
+                        return {
+                            departure: params.term
+                        };
+                    },
+                    processResults: processResults
+                },
+                placeholder: "@Html.DisplayNameFor(x => x.Departure)",
+                cache: true,
+                language: "ru"
+            });
+
+            $("#Destination").select2({
+                minimumInputLength: 2,
+                ajax: {
+                    url: "@Url.Action("GetDestinations", "Schedule")",
+                    delay: 250,
+                    dataType: 'json',
+                    type: "POST",
+                    data: function (params) {
+                        return {
+                            departure: $("#Departure").val(),
+                            destination: params.term
+                        };
+                    },
+                    processResults: processResults
+                },
+                placeholder: "@Html.DisplayNameFor(x => x.Destination)",
+                cache: true,
+                language: "ru"
+            });
+        }
+
+        var paging = Pagination({
+            formId: "#searchForm",
+            contentSelector: "#searchContent",
+            pageSelector: ".pagination .item",
+            lengthSelector: "#lengthSearch",
+            resetSelector: "#resetSearch",
+            resetCallback: function () {
+                $("select").val(null);
+                initSelector();
+            }
+        });
+        paging.search();
+        initSelector();
+    </script>
+}

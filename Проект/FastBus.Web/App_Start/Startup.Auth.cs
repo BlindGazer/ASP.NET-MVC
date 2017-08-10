@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-using FastBus.Repositories.Contracts;
+using FastBus.Persistence;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
@@ -11,7 +11,7 @@ namespace FastBus.Web
 	{
 	    public void ConfigureAuth(IAppBuilder app)
 	    {
-            app.CreatePerOwinContext(() => DependencyResolver.Current.GetService<IUnitOfWork>().Context);
+            app.CreatePerOwinContext(() => DependencyResolver.Current.GetService<FastBusDbContext>());
 
             app.CreatePerOwinContext<FastBusUserManager>(FastBusUserManager.Create);
 

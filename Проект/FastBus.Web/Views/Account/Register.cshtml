@@ -1,0 +1,29 @@
+﻿@model FastBus.Web.Models.User.RegisterUserViewModel
+@{
+    ViewBag.Title =  "Регистрация";
+    Layout = "~/Views/Shared/_Empty.cshtml";
+}
+<div class="register-form">
+    @using (Html.BeginForm())
+    {
+        <h1 class="align-center">@ViewBag.Title</h1>
+        <hr />
+        Html.RenderPartial("Partials/_RegisterPartial", Model);
+    }
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            var form = $("form");
+
+            form.css({
+                opacity: 1,
+                "-webkit-transform": "scale(1)",
+                "transform": "scale(1)",
+                "-webkit-transition": ".5s",
+                "transition": ".5s"
+            });
+        });
+    </script>
+}

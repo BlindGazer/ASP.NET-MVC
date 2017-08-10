@@ -1,8 +1,8 @@
 using System;
 using System.Data.Entity;
-using FastBus.DAL.Concrete;
-using FastBus.Repositories;
-using FastBus.Repositories.Contracts;
+using FastBus.DAL;
+using FastBus.DAL.Contracts;
+using FastBus.Persistence;
 using FastBus.Services.Contracts;
 using FastBus.Services.Services;
 using Microsoft.Practices.Unity;
@@ -29,8 +29,12 @@ namespace FastBus.Web
         {
             container.RegisterType<DbContext, FastBusDbContext>(new PerRequestLifetimeManager());
             container.RegisterType<IUnitOfWork, UnitOfWork>(new PerRequestLifetimeManager());
-            container.RegisterType<IUserService, UserSerivce>();
+            container.RegisterType<IUserService, UserService>();
             container.RegisterType<ICarService, CarService>();
+            container.RegisterType<IRouteService, RouteService>();
+            container.RegisterType<IScheduleService, ScheduleService>();
+            container.RegisterType<IDriverService, DriverService>();
+            container.RegisterType<ITicketsService, TicketService>();
         }
     }
 }
